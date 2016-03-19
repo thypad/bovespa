@@ -1,6 +1,3 @@
-# Created by https://www.gitignore.io/api/python
-
-### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -54,13 +51,6 @@ coverage.xml
 
 # Django stuff:
 *.log
-local_settings.py
-
-# Flask instance folder
-instance/
-
-# Scrapy stuff:
-.scrapy
 
 # Sphinx documentation
 docs/_build/
@@ -68,21 +58,6 @@ docs/_build/
 # PyBuilder
 target/
 
-# IPython Notebook
+#Ipython Notebook
 .ipynb_checkpoints
 
-# pyenv
-.python-version
-
-# celery beat schedule file
-celerybeat-schedule
-
-# dotenv
-.env
-
-# virtualenv
-venv/
-ENV/
-
-# Spyder project settings
-.spyderproject
