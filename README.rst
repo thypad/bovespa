@@ -42,15 +42,16 @@ cited here), each file has one header record, which is the first record in the f
 record, which is the last record in the file. The other records are stockquote records, and carry
 various information on daily stock trading.
 
-Some of the information in the stockquote records are:
+Some of the information in the stockquote records (and how it's usually called in portuguese) are:
 
-- stock symbol
-- open price
-- high price 
-- low price
-- close price
-- volume
-- financial volume
+- date             ("data do pregão")
+- stock symbol     ("símbolo da ação")
+- open price       ("preço de abertura")
+- high price       ("preço máximo")
+- low price        ("preço mínimo")
+- close price      ("preço de fechamento")
+- volume           ("quantidade total")
+- financial volume ("volume total")
 
 To print the date, stock symbol and close price of each record in the file, you can do this::
 
