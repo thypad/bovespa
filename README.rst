@@ -1,8 +1,6 @@
 *******
 bovespa
 *******
-This package
-
 
 This package reads the historical stock quote files made available by BM&FBovespa at:
 
