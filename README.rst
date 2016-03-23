@@ -1,6 +1,9 @@
 *******
 bovespa
 *******
+This package
+
+
 This package reads the historical stock quote files made available by BM&FBovespa at:
 
 http://www.bmfbovespa.com.br/pt_br/servicos/market-data/historico/mercado-a-vista/cotacoes-historicas/
@@ -9,11 +12,9 @@ The historical quotes can be downloaded for a whole year or for specific days, w
 any historical quote files you download from the link above is a simple text file that has a
 specified layout, also available in the link above.
 
-
 To install this package, do::
 
     pip install bovespa
-
 
 To use this package to read historical quote files and print the records, do::
 
@@ -62,9 +63,20 @@ To print the date, stock symbol and close price of each record in the file, you 
 
 **Warning**:
 
-Even though you can read the prices of the historical files with this package, do realize that the prices are
-not adjusted for things like splits, dividends and so on, so if you compare the prices obtained with these files
-with the prices in well-known stock quote websites, there will be differences. If you want to check if the code
-does indeed get correct prices, just use a recent date (few days ago), that should be safe. I plan to adjust the
-prices for the historical data, but that is a big project, because I'll need dividend history and other such
+The main motivation of the development of this package is to create a way to go from the historical stock
+quotes given by bovespa, to the adjusted quotes you get in big stock websites, which take into account
+splits, dividends and so on. Performance is not a big issue here, rather than fast, this package should
+be complete, that is, it should allow someone to do whatever they want to do with the information present
+in the bovespa historical stock quotes files. One other objective is to store the data that we obtain from
+other places in simple formats, maybe csv, so that anyone can use that data, even if they don't know python.
+
+So, summing up, this package wants to be given a bovespa historical stock quote file as input, and it will
+create a simple interface to extract information present in it, so you can store it in pandas, or in a
+database of your choice, AND in the future, it will also adjust the stock price history for splits, dividends, etc.
+
+Beware that since the historic stock quote prices given by bovespa are not adjusted for things like splits,
+dividends and so on, if you compare the prices obtained with these files with the prices in well-known
+stock quote websites, there will be differences. If you want to check if the code does indeed get correct
+prices, just use a recent date (few days ago), that should be safe. I plan to adjust the prices for the
+historical data, but that is a big project, because I'll need dividend history and other such
 things, so for now, it is what it is.
