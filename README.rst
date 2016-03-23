@@ -2,11 +2,12 @@
 bovespa
 *******
 This package reads the historical stock quote files made available by BM&FBovespa at:
-http://www.bmfbovespa.com.br/en_us/services/market-data/historical-data/spot-market/historical-data/
+
+http://www.bmfbovespa.com.br/pt_br/servicos/market-data/historico/mercado-a-vista/cotacoes-historicas/
 
 The historical quotes can be downloaded for a whole year or for specific days, with that said,
-any historical quote files you download from the link above is a simple text file in which the
-data is specified in a format given by this document: <missing link>
+any historical quote files you download from the link above is a simple text file that has a
+specified layout, also available in the link above.
 
 
 To install this package, do::
