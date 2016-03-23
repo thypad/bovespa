@@ -2,6 +2,9 @@
 bovespa
 *******
 
+Introduction
+============
+
 This package reads the historical stock quote files made available by BM&FBovespa at:
 
 http://www.bmfbovespa.com.br/pt_br/servicos/market-data/historico/mercado-a-vista/cotacoes-historicas/
@@ -10,10 +13,15 @@ The historical quotes can be downloaded for a whole year or for specific days, w
 any historical quote files you download from the link above is a simple text file that has a
 specified layout, also available in the link above.
 
+Installation
+============
 To install this package, do::
 
     pip install bovespa
 
+
+Usage
+=====
 To use this package to read historical quote files and print the records, do::
 
     import bovespa
