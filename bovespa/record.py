@@ -128,11 +128,15 @@ class Record:
         return self._check('PREULT')
 
     @property
-    def quantity(self): 
-        return self._check('QUATOT')
+    def num_trades(self): 
+        return self._check('TOTNEG')
 
     @property
     def volume(self): 
+        return self._check('QUATOT')
+
+    @property
+    def volume_financial(self): 
         return self._check('VOLTOT')
 
     @property
@@ -148,23 +152,26 @@ class Record:
 
 if __name__ == '__main__':
 
-    with open('../data/COTAHIST_D15032016.TXT') as f:        
+    with open('../../data/COTAHIST_D16032016.TXT') as f:        
         lines = f.read().splitlines()
         
-        for line in lines[:10]:
+        for line in lines:
             rec = Record(line)
             #pprint.pprint(rec.info)
-            print('\n\n----------------')
-            print('type: {}'.format(rec.type))
-            print('date: {}'.format(rec.date))
-            print('market: {}'.format(rec.market))
-            print('bdi code: {}'.format(rec.bdi_code))
-            print('stock code: {}'.format(rec.stock_code))
-            print('isin code: {}'.format(rec.isin_code))
-            print('company name: {}'.format(rec.company_name))
-            print('especi: {}'.format(rec.especification))
-            print('price open: {}'.format(rec.price_open))
-            print('price high: {}'.format(rec.price_high))
-            print('price low: {}'.format(rec.price_low))
-            print('price mean: {}'.format(rec.price_mean))
-            print('price close: {}'.format(rec.price_close))
+            if rec.stock_code == 'ITUB4':
+                print('\n\n----------------')
+                print('type: {}'.format(rec.type))
+                print('date: {}'.format(rec.date))
+                print('market: {}'.format(rec.market))
+                print('bdi code: {}'.format(rec.bdi_code))
+                print('stock code: {}'.format(rec.stock_code))
+                print('isin code: {}'.format(rec.isin_code))
+                print('company name: {}'.format(rec.company_name))
+                print('especi: {}'.format(rec.especification))
+                print('price open: {}'.format(rec.price_open))
+                print('price high: {}'.format(rec.price_high))
+                print('price low: {}'.format(rec.price_low))
+                print('price mean: {}'.format(rec.price_mean))
+                print('num trades: {}'.format(rec.num_trades))
+                print('quantity: {}'.format(rec.volume))
+                print('volume: {}'.format(rec.volume_financial))
