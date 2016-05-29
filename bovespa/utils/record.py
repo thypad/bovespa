@@ -1,20 +1,20 @@
 from datetime import datetime
 from collections import OrderedDict
 
-from bovespa.utils import layout
-from bovespa.utils import content
+from . import layout
+from . import content
 
 
 class Record:
     def __init__(self, data=''):
         if len(data) != layout.reclen:
             raise Exception('data length is not {} bytes'.format(layout.reclen))
-            
+
         self.__data = data
         self.__type = self.__data[layout.rectype]
         self.__layout = layout.map[self.__type][0]
         self.__info = None
-        
+
         self.__info = self.parse_data()
 
     def parse_data(self):
@@ -36,13 +36,13 @@ class Record:
 
                 elif info.type == 'float':
                     value = int(value) / 100.0
-                
+
                 tmp.append((key, value))
 
             self.__info = OrderedDict(tmp)
 
         return self.__info
-    
+
     @property
     def info(self):
         return self.__info
@@ -72,12 +72,12 @@ class Record:
     @property
     def stock_code(self):
         return self._check('CODNEG')
-    
-    def _check(self, key):
-        if key not in self.__layout.keys():
-            return ''
 
-        return self.__info[key]
+    def _check(self, key):
+        #if key not in self.__layout.keys():
+        #    return ''
+
+        return self.__info.get(key, '')
 
     @property
     def market(self):
@@ -93,68 +93,70 @@ class Record:
         return self._check('CODISI')
 
     @property
-    def company_name(self): 
+    def company_name(self):
         return self._check('NOMRES')
 
     @property
-    def especification(self): 
+    def especification(self):
         code = self._check('ESPECI')
         if code == '':
             return code
-        
+
         if code in content.especi.keys():
             return content.especi[code]
-        
+
         return code
 
     @property
-    def price_open(self): 
+    def price_open(self):
         return self._check('PREABE')
 
     @property
-    def price_high(self): 
+    def price_high(self):
         return self._check('PREMAX')
 
     @property
-    def price_low(self): 
+    def price_low(self):
         return self._check('PREMIN')
 
     @property
-    def price_mean(self): 
+    def price_mean(self):
         return self._check('PREMED')
 
     @property
-    def price_close(self): 
+    def price_close(self):
         return self._check('PREULT')
 
     @property
-    def num_trades(self): 
+    def num_trades(self):
         return self._check('TOTNEG')
 
     @property
-    def volume(self): 
+    def volume(self):
         return self._check('QUATOT')
 
     @property
-    def volume_financial(self): 
+    def volume_financial(self):
         return self._check('VOLTOT')
 
     @property
-    def board_lot(self): 
+    def board_lot(self):
         return self._check('FATCOT')
 
     def __str__(self):
-        return 'Record({}, {})'.format(self.date, self.stock_code)
+        return 'Record({}, {}, R${})'.format(self.date,
+                                           self.stock_code,
+                                           self.price_close)
 
     def __repr__(self):
-        return 'Record({}, {})'.format(self.date, self.stock_code)
+        return 'Record({})'.format(self.__data)
 
 
 if __name__ == '__main__':
 
-    with open('../../data/COTAHIST_D16032016.TXT') as f:        
+    with open('../../data/COTAHIST_D16032016.TXT') as f:
         lines = f.read().splitlines()
-        
+
         for line in lines:
             rec = Record(line)
             #pprint.pprint(rec.info)

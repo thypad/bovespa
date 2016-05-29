@@ -1,9 +1,10 @@
-from bovespa.record import Record
-from bovespa.utils import layout
+from ..utils import layout
+from ..utils.record import Record
 
-class File:
-    def __init__(self, path=None):
-        self.path = path
+
+class BovespaFileReader:
+    def __init__(self, stream):
+        self.stream = stream
         self.__recnum = 0 # number of stockquote records
         self.__origin = ''
         self.__name = ''
@@ -11,20 +12,19 @@ class File:
         self._validate()
 
     def _validate(self):
-        # read first line of file (header record)
-        with open(self.path, 'rb') as f:
-            first_line = f.readline().decode()[:-2] # first line
-            f.seek(-(layout.reclen + 2), 2) # 2 means "from the end of the file"
-            last_line = f.readline().decode()[:-2] # last line
+        # get first and last line of stream
+        first_line = self.stream.readline().decode()[:-2]
+        self.stream.seek(-(layout.reclen + 2), 2) # jump to last line
+        last_line = self.stream.readline().decode()[:-2]
 
-        first_rec = Record(first_line) # header 
-        last_rec = Record(last_line) # trailer
-        
+        first_rec = Record(first_line) # header record
+        last_rec = Record(last_line) # trailer record
+
         if first_rec.type != 'header':
             raise Exception('header record is missing')
         elif last_rec.type != 'trailer':
             raise Exception('trailer record is missing')
-        
+
         self.__date = last_rec.info['DATGER']
         self.__recnum = last_rec.info['TOTREG'] - 2
         self.__origin = last_rec.info['CODORI']
@@ -32,7 +32,10 @@ class File:
 
     def __len__(self):
         return self.__recnum
-  
+
+    def __iter__(self):
+        return self
+
     @property
     def name(self):
         return self.__name
@@ -45,9 +48,8 @@ class File:
     def date(self):
         return self.__date
 
-
     def __repr__(self):
-        return 'File(path={})'.format(self.path)
+        return 'BovespaFileReader(stream.)'.format(self.path)
 
     def __str__(self):
         desc =  'file path: {}\n' +\
@@ -58,21 +60,13 @@ class File:
 
         desc = desc.format(self.path, self.name, self.origin, self.date, len(self))
         return desc
-    
+
     def query(self, stock=None):
-        with open(self.path, 'r') as f:
-            for line in f:
-                rec = Record(line[:-1]) # remove newline
-                if rec.type == 'stockquote': # ignore header and trailer records
-                    if stock is None or rec.stock_code == stock:
-                        yield rec
+        self.stream.seek(0) # go to the beginning of stream
 
-    
-if __name__ == '__main__':
-    path = '../data/COTAHIST_D15032016.TXT'
-    #path = '../data/COTAHIST_A2015.TXT'
-   
-    bf = File(path)
-
-    for rec in bf.query():
-        print(rec)
+        for line in self.stream:
+            rec = Record(line.decode()[:-2])
+            #rec = Record(line[:-2]) # remove newline
+            if rec.type == 'stockquote': # ignore header and trailer records
+                if stock is None or rec.stock_code == stock:
+                    yield rec
