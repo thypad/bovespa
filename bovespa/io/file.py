@@ -1,10 +1,12 @@
+import csv
+
 from ..utils import layout
 from ..utils.record import Record
 
 
-class BovespaFileReader:
-    def __init__(self, stream):
-        self.stream = stream
+class BovespaFile:
+    def __init__(self, path):
+        self.path = path
         self.__recnum = 0 # number of stockquote records
         self.__origin = ''
         self.__name = ''
@@ -12,10 +14,11 @@ class BovespaFileReader:
         self._validate()
 
     def _validate(self):
-        # get first and last line of stream
-        first_line = self.stream.readline().decode()[:-2]
-        self.stream.seek(-(layout.reclen + 2), 2) # jump to last line
-        last_line = self.stream.readline().decode()[:-2]
+        # get first and last line of file
+        with open(self.path, 'rb') as f:
+            first_line = f.readline().decode()[:-2]
+            f.seek(-(layout.reclen + 2), 2) # jump to last line
+            last_line = f.readline().decode()[:-2]
 
         first_rec = Record(first_line) # header record
         last_rec = Record(last_line) # trailer record
@@ -30,12 +33,6 @@ class BovespaFileReader:
         self.__origin = last_rec.info['CODORI']
         self.__name = last_rec.info['NOMARQ']
 
-    def __len__(self):
-        return self.__recnum
-
-    def __iter__(self):
-        return self
-
     @property
     def name(self):
         return self.__name
@@ -48,8 +45,11 @@ class BovespaFileReader:
     def date(self):
         return self.__date
 
+    def __len__(self):
+        return self.__recnum
+
     def __repr__(self):
-        return 'BovespaFileReader(stream.)'.format(self.path)
+        return 'BovespaFile()'.format(self.path)
 
     def __str__(self):
         desc =  'file path: {}\n' +\
@@ -61,12 +61,29 @@ class BovespaFileReader:
         desc = desc.format(self.path, self.name, self.origin, self.date, len(self))
         return desc
 
-    def query(self, stock=None):
-        self.stream.seek(0) # go to the beginning of stream
+    def query(self):
+        pass
+        #self.stream.seek(0) # go to the beginning of stream
 
-        for line in self.stream:
-            rec = Record(line.decode()[:-2])
+        #for line in self.stream:
+        #    rec = Record(line.decode()[:-2])
             #rec = Record(line[:-2]) # remove newline
-            if rec.type == 'stockquote': # ignore header and trailer records
-                if stock is None or rec.stock_code == stock:
-                    yield rec
+        #    if rec.type == 'stockquote': # ignore header and trailer records
+        #        if stock is None or rec.stock_code == stock:
+        #            yield rec
+
+    def to_pandas(self):
+        pass
+
+    def to_csv(self, outpath, query={'stock_code': 'HGTX3'}):
+        with open(self.path, 'rb') as f:
+            with open(outpath, 'w') as csvfile:
+                fieldnames = layout.stockquote.keys()
+                writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+                writer.writeheader()
+
+                for line in f:
+                    rec = Record(line.decode()[:-2])
+
+                    if rec.type == 'stockquote' and rec.stock_code == query['stock_code']:
+                        writer.writerow(dict(rec.info))
