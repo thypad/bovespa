@@ -145,35 +145,8 @@ class Record:
 
     def __str__(self):
         return 'Record({}, {}, R${})'.format(self.date,
-                                           self.stock_code,
-                                           self.price_close)
+                                             self.stock_code,
+                                             self.price_close)
 
     def __repr__(self):
         return 'Record({})'.format(self.__data)
-
-
-if __name__ == '__main__':
-
-    with open('../../data/COTAHIST_D16032016.TXT') as f:
-        lines = f.read().splitlines()
-
-        for line in lines:
-            rec = Record(line)
-            #pprint.pprint(rec.info)
-            if rec.stock_code == 'ITUB4':
-                print('\n\n----------------')
-                print('type: {}'.format(rec.type))
-                print('date: {}'.format(rec.date))
-                print('market: {}'.format(rec.market))
-                print('bdi code: {}'.format(rec.bdi_code))
-                print('stock code: {}'.format(rec.stock_code))
-                print('isin code: {}'.format(rec.isin_code))
-                print('company name: {}'.format(rec.company_name))
-                print('especi: {}'.format(rec.especification))
-                print('price open: {}'.format(rec.price_open))
-                print('price high: {}'.format(rec.price_high))
-                print('price low: {}'.format(rec.price_low))
-                print('price mean: {}'.format(rec.price_mean))
-                print('num trades: {}'.format(rec.num_trades))
-                print('quantity: {}'.format(rec.volume))
-                print('volume: {}'.format(rec.volume_financial))
