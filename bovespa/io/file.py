@@ -4,6 +4,10 @@ from ..utils import layout
 from ..utils.record import Record
 
 
+def process_line(line):
+    return line.decode()[:-2]
+
+
 class BovespaFile:
     def __init__(self, path):
         self.path = path
@@ -11,14 +15,17 @@ class BovespaFile:
         self.__origin = ''
         self.__name = ''
 
+        self.__header = None
+        self.__trailer = None
+
         self._validate()
 
     def _validate(self):
         # get first and last line of file
         with open(self.path, 'rb') as f:
-            first_line = f.readline().decode()[:-2]
+            first_line = process_line(f.readline())
             f.seek(-(layout.reclen + 2), 2) # jump to last line
-            last_line = f.readline().decode()[:-2]
+            last_line = process_line(f.readline())
 
         first_rec = Record(first_line) # header record
         last_rec = Record(last_line) # trailer record
@@ -28,10 +35,14 @@ class BovespaFile:
         elif last_rec.type != 'trailer':
             raise Exception('trailer record is missing')
 
+        self.__header == first_rec.info
+        self.__trailer == last_rec.info
+
         self.__date = last_rec.info['DATGER']
         self.__recnum = last_rec.info['TOTREG'] - 2
         self.__origin = last_rec.info['CODORI']
         self.__name = last_rec.info['NOMARQ']
+
 
     @property
     def name(self):
@@ -61,21 +72,21 @@ class BovespaFile:
         desc = desc.format(self.path, self.name, self.origin, self.date, len(self))
         return desc
 
-    def query(self):
-        pass
-        #self.stream.seek(0) # go to the beginning of stream
+    def stockquotes(self, code=None):
+        quotes = []
+        with open(self.path, 'rb') as f:
+            for line in f:
+                rec = Record(process_line(line))
+                if rec.type == 'stockquote': # ignore header and trailer records
+                    if code is None or rec.stock_code == code:
+                        quotes.append(rec)
 
-        #for line in self.stream:
-        #    rec = Record(line.decode()[:-2])
-            #rec = Record(line[:-2]) # remove newline
-        #    if rec.type == 'stockquote': # ignore header and trailer records
-        #        if stock is None or rec.stock_code == stock:
-        #            yield rec
+        return quotes
 
     def to_pandas(self):
         pass
 
-    def to_csv(self, outpath, query={'stock_code': 'HGTX3'}):
+    def to_csv(self, outpath, stock_code=None):
         with open(self.path, 'rb') as f:
             with open(outpath, 'w') as csvfile:
                 fieldnames = layout.stockquote.keys()
@@ -83,7 +94,8 @@ class BovespaFile:
                 writer.writeheader()
 
                 for line in f:
-                    rec = Record(line.decode()[:-2])
+                    rec = Record(process_line(line))
 
-                    if rec.type == 'stockquote' and rec.stock_code == query['stock_code']:
-                        writer.writerow(dict(rec.info))
+                    if rec.type == 'stockquote':
+                        if rec.stock_code == stock_code or stock_code is None:
+                            writer.writerow(dict(rec.info))
