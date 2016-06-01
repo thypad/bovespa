@@ -1,3 +1,4 @@
+import csv
 from datetime import datetime
 from collections import OrderedDict
 
@@ -150,3 +151,22 @@ class Record:
 
     def __repr__(self):
         return 'Record({})'.format(self.__data)
+
+
+class RecordCollection:
+    def __init__(self):
+        self.records = []
+
+    def add(self, recs):
+        if recs is not None:
+            self.records.extend(recs)
+
+    def to_csv(self, outpath):
+        with open(outpath, 'w') as csvfile:
+            fieldnames = layout.stockquote.keys()
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
+
+            for rec in self.records:
+                if rec.stock_code == stock_code or stock_code is None:
+                    writer.writerow(dict(rec.info))
