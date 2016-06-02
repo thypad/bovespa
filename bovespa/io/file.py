@@ -35,6 +35,8 @@ class BovespaFile:
         elif last_rec.type != 'trailer':
             raise Exception('trailer record is missing')
 
+        print(first_rec.info)
+
         self.__header == first_rec.info
         self.__trailer == last_rec.info
 
@@ -43,6 +45,13 @@ class BovespaFile:
         self.__origin = last_rec.info['CODORI']
         self.__name = last_rec.info['NOMARQ']
 
+    @property
+    def header(self):
+        return self.__header
+
+    @property
+    def trailer(self):
+        return self.__trailer
 
     @property
     def name(self):
