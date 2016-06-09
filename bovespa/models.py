@@ -29,7 +29,10 @@ class Stockquote(Base):
 
     stock_code = Column(String(50))
 
-    price_open = Column(Float
+    price_open = Column(Float)
+    price_close = Column(Float)
+    price_close = Column(Float)
+
     cnpj = Column(String(50))
     sector = Column(String(12))
 
