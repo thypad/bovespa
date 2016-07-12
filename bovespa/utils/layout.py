@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 The comments are in portuguese here, so we can be faithful to the original layout
 document, which is written in portuguese.

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 market = {
     '010': 'VISTA',
     '012': 'EXERCÍCIO DE OPÇÕES DE COMPRA',
