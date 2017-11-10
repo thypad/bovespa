@@ -65,7 +65,7 @@ To print the date, stock symbol and close price of each record in the file, you 
     
     bf = bovespa.File(<path to file>)
     for rec in bf.query(stock='PETR3'):
-        print('<{}, {}, {}>'.format(rec.date, rec.stock_symbol, rec.price_close))
+        print('<{}, {}, {}>'.format(rec.date, rec.stock_code, rec.price_close))
 
 
 **Warning**:
