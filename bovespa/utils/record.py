@@ -24,7 +24,7 @@ class Record:
 
             for key in self.__layout.keys():
                 info = self.__layout[key]
-                value = self.__data[info.slice]#.decode()
+                value = self.__data[info.slice]  # .decode()
 
                 if info.type == 'string':
                     value = ' '.join(value.split())
@@ -64,7 +64,7 @@ class Record:
 
     @property
     def bdi_code(self):
-        code =  self._check('CODBDI')
+        code = self._check('CODBDI')
         if code == '':
             return code
 
@@ -75,7 +75,7 @@ class Record:
         return self._check('CODNEG')
 
     def _check(self, key):
-        #if key not in self.__layout.keys():
+        # if key not in self.__layout.keys():
         #    return ''
 
         return self.__info.get(key, '')
@@ -87,7 +87,6 @@ class Record:
             return code
 
         return content.market[code]
-
 
     @property
     def isin_code(self):
@@ -145,9 +144,9 @@ class Record:
         return self._check('FATCOT')
 
     def __str__(self):
-        return 'Record({}, {}, R${})'.format(self.date,
-                                             self.stock_code,
-                                             self.price_close)
+        return 'Record({}, {}, R${})'.format(
+            self.date, self.stock_code, self.price_close
+        )
 
     def __repr__(self):
         return 'Record({})'.format(self.__data)
@@ -161,7 +160,7 @@ class RecordCollection:
         if recs is not None:
             self.records.extend(recs)
 
-    def to_csv(self, outpath):
+    def to_csv(self, outpath, stock_code=None):
         with open(outpath, 'w') as csvfile:
             fieldnames = layout.stockquote.keys()
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
